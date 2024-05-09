@@ -1,2 +1,0 @@
-food spawner per second;gene mutation range;body mutation range;aggresivness multiplier
-4;0,1;0,05;1
