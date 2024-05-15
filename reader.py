@@ -15,11 +15,12 @@ class SimulationResults:
     results: pd.DataFrame
     
     def __str__(self) -> str:
-        print(f"Result {self.index} - {self.date.strftime('%d.%m.%Y %H-%M-%S')}, rows count: {self.results.shape[0]}")
+        return f"Result {self.index} - {self.date.strftime('%d.%m.%Y %H-%M-%S')}, rows count: {self.results.shape[0]}"
 
-data_path: str = os.path.join(os.getcwd(), DATA_FOLDER)
-
-def parse_csv_files(data_path) -> List[SimulationResults]:
+def parse_csv_files(data_path=None) -> List[SimulationResults]:
+    if data_path is None:
+        data_path = os.path.join(os.getcwd(), DATA_FOLDER)
+        
     print("Started parsing...")
     
     files = [file for file in os.listdir(data_path) if file.endswith('.csv')]
@@ -32,7 +33,10 @@ def parse_csv_files(data_path) -> List[SimulationResults]:
     
     for initial_settings_filename in initial_settings:
         try:
-            m = re.fullmatch(r'Initial settings (?P<index>\d+) - (?P<date>\d\d.\d\d.\d\d\d\d \d\d-\d\d-\d\d).csv', initial_settings_filename)
+            m: re.Match[str] | None = re.fullmatch(r'Initial settings (?P<index>\d+) - (?P<date>\d\d.\d\d.\d\d\d\d \d\d-\d\d-\d\d).csv', initial_settings_filename)
+            
+            if m is None:
+                raise ValueError(f"Filename {initial_settings_filename} does not match the expected pattern")
             
             index = int(m.group('index'))
             date: datetime = datetime.strptime(m.group('date'), "%d.%m.%Y %H-%M-%S")
@@ -52,10 +56,14 @@ def parse_csv_files(data_path) -> List[SimulationResults]:
         
     print(f"Ended parsing. Parsed files: {len(simulation_results)}, errors: {error_count}")
             
+    simulation_results.sort(key=lambda x: x.date)
+    
     return simulation_results
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":    
+    data_path: str = os.path.join(os.getcwd(), DATA_FOLDER)
+    
     results: List[SimulationResults] = parse_csv_files(data_path)   
 
     for result in results:
