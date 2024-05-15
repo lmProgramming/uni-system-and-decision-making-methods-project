@@ -50,7 +50,7 @@ def parse_csv_files(data_path) -> List[SimulationResults]:
             error_count += 1
             print(f"Error parsing file {initial_settings_filename}: {e}")
         
-    print(f"Ended parsing. Parsed files: {len(simulation_results)}, errors: {}")
+    print(f"Ended parsing. Parsed files: {len(simulation_results)}, errors: {error_count}")
             
     return simulation_results
 
