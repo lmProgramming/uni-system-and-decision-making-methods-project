@@ -14,6 +14,12 @@ class SimulationResults:
     initial_parameters: pd.DataFrame
     history: pd.DataFrame
     
+    def get_last_history(self) -> pd.Series:
+        row = self.history.iloc[-1]
+        if row["simulation time"] == "Ended prematurely - over 200 creatures":
+            return self.history.iloc[-2]
+        return row
+    
     def __str__(self) -> str:
         return f"Result {self.index} - {self.date.strftime('%d.%m.%Y %H-%M-%S')}, rows count: {self.history.shape[0]}"
 
