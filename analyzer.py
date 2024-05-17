@@ -38,7 +38,6 @@ def analyze_simulation_results(simulation_results: List[SimulationResults]):
         results = [result.get_last_history()[result_name] for result in simulation_results]
         
         reg = LinearRegression().fit(initial_parameters[:train_data_amount], results[:train_data_amount])
-        print(reg.coef_)
         print(reg.score(initial_parameters, results))
         
         for i in zip(initial_parameters[train_data_amount:], results[train_data_amount:]):
