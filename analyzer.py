@@ -1,4 +1,4 @@
-from reader import parse_csv_files, SimulationResults
+from reader import parse_csvs, SimulationResults
 from typing import List
 import matplotlib.pyplot as plt
 import re
@@ -44,7 +44,9 @@ def analyze_simulation_results(simulation_results: List[SimulationResults]):
         result_name = input("Enter the name of the result you want to analyze: ")
         results = [result.get_last_history()[result_name] for result in simulation_results]
         
-        reg = estimate(LinearRegression(), initial_parameters[:train_data_amount], results[:train_data_amount])
+        model = LogisticRegression
+        
+        reg: LinearRegression = estimate(model(), initial_parameters[:train_data_amount], results[:train_data_amount])
         print(reg.coef_)
         print(reg.score(initial_parameters, results))
         
@@ -63,6 +65,6 @@ def estimate(model, initial_parameters, results):
     return regressed
     
 if __name__ == "__main__":
-    simulation_results = parse_csv_files()
+    simulation_results: List[SimulationResults] = parse_csvs()
     
     analyze_simulation_results(simulation_results)

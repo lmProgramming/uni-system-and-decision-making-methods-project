@@ -29,7 +29,7 @@ class SimulationResults:
     def __str__(self) -> str:
         return f"Result {self.index} - {self.date.strftime('%d.%m.%Y %H-%M-%S')}, rows count: {self.history.shape[0]}"
 
-def parse_csv_files(data_path = Optional(str), limit_of_logs: int=None) -> List[SimulationResults]:
+def parse_csvs(data_path: Optional[str] = None, limit_of_logs: Optional[int] = None) -> List[SimulationResults]:
     if data_path is None:
         data_path = os.path.join(os.getcwd(), DATA_FOLDER)
         
@@ -79,7 +79,7 @@ def parse_csv_files(data_path = Optional(str), limit_of_logs: int=None) -> List[
 if __name__ == "__main__":    
     data_path: str = os.path.join(os.getcwd(), DATA_FOLDER)
     
-    results: List[SimulationResults] = parse_csv_files(data_path)   
+    results: List[SimulationResults] = parse_csvs(data_path)   
 
     for result in results:
         with pd.option_context('display.max_rows', None, 'display.max_columns', None):  # more options can be specified also
