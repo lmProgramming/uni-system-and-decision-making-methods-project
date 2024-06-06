@@ -2,7 +2,7 @@ from reader import parse_csv_files, SimulationResults
 from typing import List
 import matplotlib.pyplot as plt
 import re
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LinearRegression, LogisticRegression
 import numpy as np
 from text_aux import convert_str_to_capitalized_words
 '''
@@ -19,6 +19,11 @@ average creature cost;average amount of body parts;average amount of protective 
 average amount of composters;average amount of turbines;average amount of offensive spikes;
 '''
 
+'''
+aggresivnesMult
+health gene
+'''
+
 
 def analyze_simulation_results(simulation_results: List[SimulationResults]):
     print("Started analyzing...")
@@ -27,6 +32,8 @@ def analyze_simulation_results(simulation_results: List[SimulationResults]):
         initial_parameter_name = input("Enter the name of the initial parameter you want to analyze (or 'exit' to exit): ")
         if initial_parameter_name == 'exit':
             break        
+        if str.isdigit(initial_parameter_name[0]):
+            initial_parameter_name = f'_{initial_parameter_name}'
         
         train_data_coef = 0.8
         train_data_amount = int(len(simulation_results) * train_data_coef)
@@ -37,7 +44,7 @@ def analyze_simulation_results(simulation_results: List[SimulationResults]):
         result_name = input("Enter the name of the result you want to analyze: ")
         results = [result.get_last_history()[result_name] for result in simulation_results]
         
-        reg = LinearRegression().fit(initial_parameters[:train_data_amount], results[:train_data_amount])
+        reg = estimate(LinearRegression(), initial_parameters[:train_data_amount], results[:train_data_amount])
         print(reg.coef_)
         print(reg.score(initial_parameters, results))
         
@@ -50,6 +57,10 @@ def analyze_simulation_results(simulation_results: List[SimulationResults]):
         plt.title(f'{convert_str_to_capitalized_words(initial_parameter_name)} vs {convert_str_to_capitalized_words(result_name)}')
         plt.show()
     print("Ended analyzing.")
+    
+def estimate(model, initial_parameters, results):
+    regressed = model.fit(initial_parameters, results)
+    return regressed
     
 if __name__ == "__main__":
     simulation_results = parse_csv_files()

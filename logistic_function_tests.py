@@ -1,6 +1,7 @@
 import numpy as np
 import math
 import random
+import matplotlib.pyplot as plt
 
 def custom_logistic(x, mn, mx, mean):
     a = -4*mean+2
@@ -23,8 +24,6 @@ suma = 0
 for i in range(1000):
     suma += custom_logistic(random.uniform(0., 1.), mn, mx, mean)
 print(suma / 1000)
-
-import matplotlib.pyplot as plt
 
 plt.plot(x_values, y_values)
 plt.xlabel('x')
