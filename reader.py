@@ -7,31 +7,47 @@ from datetime import datetime
 
 DATA_FOLDER = "data\\"
 
-ENDED_PREMATURELY = "Ended prematurely - over 200 creatures"
+ENDED_OVERGROWTH = "Ended prematurely - over 200 creatures"
+EXPECTED_SIMULATION_TIME = 4500
 
 @dataclass(frozen=True)
 class SimulationResults:
     index: int
     date: datetime
-    initial_parameters: pd.DataFrame
+    parameters: pd.DataFrame
     history: pd.DataFrame
     
     @property
-    def ended_prematurely(self) -> bool:
-        return self.history.iloc[-1]["simulation time"] == ENDED_PREMATURELY
+    def result(self) -> pd.Series:
+        return self.history.iloc[-1]
+    
+    @property
+    def overgrowth(self) -> bool:
+        return self.history.iloc[-1]["simulation time"] == ENDED_OVERGROWTH
+    
+    @property
+    def went_extinct(self) -> bool:
+        return self.history.iloc[-1]["simulation time"] < EXPECTED_SIMULATION_TIME and not self.overgrowth
     
     def get_last_history(self) -> pd.Series:
         row: pd.Series = self.history.iloc[-1]
-        if self.ended_prematurely:
+        if self.overgrowth:
             return self.history.iloc[-2]
         return row
     
     def __str__(self) -> str:
         return f"Result {self.index} - {self.date.strftime('%d.%m.%Y %H-%M-%S')}, rows count: {self.history.shape[0]}"
+    
+def default_data_path() -> str:
+    return os.path.join(os.getcwd(), DATA_FOLDER)
 
-def parse_csvs(data_path: Optional[str] = None, limit_of_logs: Optional[int] = None) -> List[SimulationResults]:
+def parse_csvs(
+    data_path: Optional[str] = None, 
+    limit_of_logs: Optional[int] = None, 
+    include_extinctions: bool = False,
+    include_overgrowth: bool = False) -> List[SimulationResults]:
     if data_path is None:
-        data_path = os.path.join(os.getcwd(), DATA_FOLDER)
+        data_path = default_data_path()
         
     print("Started parsing...")
     
@@ -42,6 +58,7 @@ def parse_csvs(data_path: Optional[str] = None, limit_of_logs: Optional[int] = N
     simulation_results: List[SimulationResults] = []
     
     error_count = 0
+    skipped_count = 0
     
     for initial_settings_filename in initial_settings:
         try:
@@ -58,6 +75,16 @@ def parse_csvs(data_path: Optional[str] = None, limit_of_logs: Optional[int] = N
             attempt_filename: str = f"Attempt {index} - {date.strftime('%d.%m.%Y %H-%M-%S')}.csv"
             attempt_df: pd.DataFrame = pd.read_csv(os.path.join(data_path, attempt_filename), delimiter=';', header=0, decimal=",")
             
+            simulation_result = SimulationResults(index, date, initial_settings_df, attempt_df)
+            
+            if simulation_result.overgrowth and not include_overgrowth:  
+                print(f"Excluding overgrowth result {index} - {date.strftime('%d.%m.%Y %H-%M-%S')}")
+                skipped_count += 1
+                continue
+            if simulation_result.went_extinct and not include_extinctions:       
+                print(f"Excluding extinct result {index} - {date.strftime('%d.%m.%Y %H-%M-%S')}")
+                skipped_count += 1
+                continue
             simulation_results.append(SimulationResults(index, date, initial_settings_df, attempt_df))
         except IndexError:
             error_count += 1
@@ -69,20 +96,18 @@ def parse_csvs(data_path: Optional[str] = None, limit_of_logs: Optional[int] = N
         if limit_of_logs is not None and len(simulation_results) >= limit_of_logs:
             break
         
-    print(f"Ended parsing. Parsed files: {len(simulation_results)}, errors: {error_count}")
+    print(f"Ended parsing. Parsed files: {len(simulation_results)}, errors: {error_count}, skipped: {skipped_count}")
             
     simulation_results.sort(key=lambda x: x.index)
     
     return simulation_results
 
 
-if __name__ == "__main__":    
-    data_path: str = os.path.join(os.getcwd(), DATA_FOLDER)
-    
-    results: List[SimulationResults] = parse_csvs(data_path)   
+if __name__ == "__main__":        
+    results: List[SimulationResults] = parse_csvs()   
 
     for result in results:
         with pd.option_context('display.max_rows', None, 'display.max_columns', None):  # more options can be specified also
-            print(result.initial_parameters)
+            print(result.parameters)
             print(result.history)
             input("Press Enter to continue...")

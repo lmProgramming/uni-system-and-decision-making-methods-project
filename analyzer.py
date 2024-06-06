@@ -39,7 +39,7 @@ def analyze_simulation_results(simulation_results: List[SimulationResults]):
         train_data_amount = int(len(simulation_results) * train_data_coef)
         test_data_amount = len(simulation_results) - train_data_amount
         
-        initial_parameters = [result.initial_parameters.iloc[0] for result in simulation_results]
+        initial_parameters = [result.parameters.iloc[0] for result in simulation_results]
         initial_parameter_selected = [init[initial_parameter_name] for init in initial_parameters]
         result_name = input("Enter the name of the result you want to analyze: ")
         results = [result.get_last_history()[result_name] for result in simulation_results]
