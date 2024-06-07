@@ -1,4 +1,4 @@
-simulation time;speed gene;sensor gene;processing gene;gluttony gene;reproduction wilness gene;energy storage capacity gene;parental empathy gene;aggresivness gene;health gene;food preference gene;creatures count;average creature cost;average amount of body parts;average amount of protective spikes;average amount of composters;average amount of turbines;average amount of offensive spikes;
+simulation time;speed gene;sensor gene;processing gene;gluttony gene;reproduction wilness gene;energy storage capacity gene;parental empathy gene;aggresivness gene;health gene;food preference gene;creatures count;average creature cost;average amount of body parts;average amount of protective spikes;average amount of composters;average amount of turbines;average amount of offensive spikes
 0;0,4747827;0,5024358;0,472589;0,5070611;0,508411;0,487515;0,4959094;0,495444;0,4909088;0,5;21;3,356067;0;0;0;0;0
 500,0014;0,5752223;0,4473752;0,5157591;0,5240431;0,4625727;0,4361173;0,4612323;0,5429338;0,4749321;0,5;18;3,876165;0;0;0;0;0
 1000,003;0,6835207;0,5033762;0,6347011;0,6680649;0,4129506;0,4099035;0,448743;0,5076565;0,5123758;0,5;15;4,67938;0;0;0;0;0
