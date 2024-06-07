@@ -3,9 +3,7 @@ import math
 import random
 import matplotlib.pyplot as plt
 
-def custom_logistic(x, mn, mx, mean):
-    a = -4*mean+2
-    
+def custom_logistic(x, mn, mx, mean):    
     m_inter = (mean-mn)/(mx-mn)
        
     return x**math.log(m_inter, 0.5) * (mx-mn) + mn
