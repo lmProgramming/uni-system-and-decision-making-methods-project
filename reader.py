@@ -52,9 +52,8 @@ def parse_csvs(
     print("Started parsing...")
     
     files: List[str] = [file for file in os.listdir(data_path) if file.endswith('.csv')]
-    
+        
     initial_settings: List[str] = [file for file in files if file.startswith('Initial settings')]
-    
     simulation_results: List[SimulationResults] = []
     
     error_count = 0
@@ -107,7 +106,7 @@ if __name__ == "__main__":
     results: List[SimulationResults] = parse_csvs()   
 
     for result in results:
-        with pd.option_context('display.max_rows', None, 'display.max_columns', None):  # more options can be specified also
+        with pd.option_context('display.max_rows', None, 'display.max_columns', None):
             print(result.parameters)
             print(result.history)
             input("Press Enter to continue...")
