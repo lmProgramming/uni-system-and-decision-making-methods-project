@@ -44,7 +44,7 @@ def analyze_simulation_results(simulation_results: List[SimulationResults]):
         result_name = input("Enter the name of the result you want to analyze: ")
         results = [result.get_last_history()[result_name] for result in simulation_results]
         
-        model = LogisticRegression
+        model = LinearRegression
         
         reg: LinearRegression = estimate(model(), initial_parameters[:train_data_amount], results[:train_data_amount])
         print(reg.coef_)
