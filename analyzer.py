@@ -2,7 +2,7 @@ from reader import parse_csvs, SimulationResults
 from typing import List
 import matplotlib.pyplot as plt
 import re
-from sklearn.linear_model import LinearRegression, LogisticRegression
+from sklearn.linear_model import LinearRegression
 import numpy as np
 from text_aux import convert_str_to_capitalized_words
 '''
