@@ -73,6 +73,7 @@ def parse_csvs(
             
             attempt_filename: str = f"Attempt {index} - {date.strftime('%d.%m.%Y %H-%M-%S')}.csv"
             attempt_df: pd.DataFrame = pd.read_csv(os.path.join(data_path, attempt_filename), delimiter=';', header=0, decimal=",")
+            attempt_df['creatures count'] = attempt_df['creatures count'].astype(int)
             
             simulation_result = SimulationResults(index, date, initial_settings_df, attempt_df)
             
