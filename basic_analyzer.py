@@ -5,6 +5,7 @@ import re
 from sklearn.linear_model import LinearRegression
 import numpy as np
 from text_aux import convert_str_to_capitalized_words
+
 '''
 mapSize;startingCreatures;timeToSpawnAFood;
 hungerMult;speedMult;mitosisSpeedMult;mutationRange;bodyPartMutationChance;
@@ -24,7 +25,6 @@ aggresivnesMult
 health gene
 '''
 
-
 def analyze_simulation_results(simulation_results: List[SimulationResults]):
     print("Started analyzing...")
 
@@ -37,7 +37,6 @@ def analyze_simulation_results(simulation_results: List[SimulationResults]):
         
         train_data_coef = 0.8
         train_data_amount = int(len(simulation_results) * train_data_coef)
-        test_data_amount = len(simulation_results) - train_data_amount
         
         initial_parameters = [result.parameters.iloc[0] for result in simulation_results]
         initial_parameter_selected = [init[initial_parameter_name] for init in initial_parameters]
