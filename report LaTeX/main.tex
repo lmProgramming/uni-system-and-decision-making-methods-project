@@ -20,7 +20,7 @@
 \newpage
 
 \section{Wstęp}
-Poniższa praca będzie zajmować się badaniem zależności średniego kosztu komórki (average creature cost) w grze Cell Evolution od początkowych parametrów symulacji. Koszt komórki oznacza ilość energii, jaką organizm potrzebuje, by przeprowadzić mitozę. Parametrami początkowymi będą:
+Poniższa praca będzie zajmować się badaniem zależności średniego kosztu komórki (average creature cost) w grze Cell Evolution od początkowych parametrów symulacji. Koszt komórki oznacza ilość energii, jaką organizm potrzebuje, by przeprowadzić mitozę ("koszt" genu/części ciała/akcji w raporcie będzie zawsze oznaczał koszt energetyczny - czyli jedzenie przetworzone na energię). Parametrami początkowymi będą:
 \begin{itemize}[itemsep=0mm]
     \item wielkość mapy (map size),
     \item liczba początkowych komórek (starting creatures),
@@ -28,18 +28,21 @@ Poniższa praca będzie zajmować się badaniem zależności średniego kosztu k
     \item mnożnik mutacji (mutation range),
     \item mnożnik prawdopodobieństwa mutacji części ciała (body part mutation chance),
     \item okres czasu między reprodukcją (interval between births),
-    \item mnożnik zależności głodu od wieku (hunger mult from age),
+    \item mnożnik wpływu wieku na głód (hunger mult from age),
     \item mnożnik agresywności (aggresivnes mult),
     \item mnożnik kosztu genów (genes cost mult),
     \item mnożnik kosztu części ciała (body parts cost mult).
 \end{itemize}
 Najpierw zostanie przeprowadzona regresja liniowa, by estymować koszt komórki z parametrów początkowych. Następnie sprawdzona będzie hipoteza, czy uwzględnienie w modelu innych danych końcowych (rezultatów) symulacji zwiększy jego jakość.
-Dodatkowo zostaną utworzone trzy modele regresji, które będą ze sobą porównane po zoptymalizowaniu. 
+
+Dodatkowo zostaną utworzone trzy modele regresji, które będą ze sobą porównane po zoptymalizowaniu.
 
 Pomysł projektu zainspirowany był chęcią sprawdzenia, czy w grze Cell Evolution dałoby się przewidzieć różne dane końcowe na podstawie parametrów symulacji. Oznaczałoby to, że różne symulacje o tych samych parametrach kończyłyby się podobnym skutkiem. W grze występuje jednak dużo losowości - jedzenie powstaje w różnych miejscach, agenci przy polowaniu wybierają swoje ofiary niederministycznie, mutacje odbywają się losowo i wiele więcej. 
 
 \section{Opis działania symulacji w Cell Evolution}
-W tej grze, na podstawie parametrów początkowych, tworzona jest mapa wraz z początkową populacją, której wartości wszystkich genów są bliskie 0,5. Następnie komórki te konkurują między sobą o ograniczone zasoby jedzenia, starając się zdobyć energię potrzebną do reprodukcji. Mogą ją zdobyć na 2 sposoby - zjeść plankton, który powstaje w losowych miejscach na mapie lub zjeść ciało innej komórki, która zmarła w sposób naturalny lub w wyniku polowania. Wraz z wiekiem wzrasta koszt utrzymania życia. Gdy komórki zdobędą wystarczającą ilość energii i minie odpowiednia ilość czasu między mitozami, mogą przeprowadzić reprodukcję. Jest to proces długotrwały, który je spowalnia. Po jego zakończeniu powstaje nowa komórka, która dziedziczy po jedynym rodzicu geny i części ciała. Na podstawie parametrów początkowych przeprowadzona jest jej mutacja, zmieniająca wartość każdego genu. Nowa komórka potencjalnie tworzy nową część ciała w losowym miejscu lub usuwa istniejącą.
+W tej grze, na podstawie parametrów początkowych, tworzona jest mapa wraz z początkową populacją, której wartości wszystkich genów są bliskie 0,5. Następnie komórki te konkurują między sobą o ograniczone zasoby jedzenia, starając się zdobyć energię potrzebną do reprodukcji. Mogą ją zdobyć na 2 sposoby - zjeść plankton, który powstaje w losowych miejscach na mapie lub zjeść ciało innej komórki, która zmarła w sposób naturalny czy w wyniku polowania. Wraz z wiekiem wzrasta koszt utrzymania życia. Gdy komórki zdobędą wystarczającą ilość energii i minie odpowiednia ilość czasu między mitozami, mogą przeprowadzić reprodukcję. Jest to proces długotrwały, który je spowalnia. Po jego zakończeniu powstaje nowa komórka, która dziedziczy po jedynym rodzicu geny i części ciała. Na podstawie parametrów początkowych przeprowadzona jest jej mutacja, zmieniająca wartość każdego genu. Nowa komórka potencjalnie tworzy nową część ciała w losowym miejscu lub usuwa istniejącą. Komórka może mieć od 0 do 5 części ciała. Kolce obronne i ofensywne służą do walki, kompostownik do przetwarzania odpadów na energię, a turbiny do przyspieszenia ruchu. 
+
+Koszt komórki to matematyczna funkcja, która jest obliczona z wartości genów i kosztu poszczególnych części ciała. Jest to inna wartość dla każdego organizmu.
 
 \section{Zbiór danych}
 \subsection{Źródła danych}
@@ -88,7 +91,7 @@ Następnie zapisywane są dane pozyskane po uruchomieniu symulacji w plikach "At
 
 Analizowanym zbiorem danych są więc krotki zawierające dla danej symulacji parametry początkowe oraz ostatni wiersz udokumentowanych rezulatów. Krotki te są formowane w pliku analyzer.py, łączącym pliki "Initial settings x..." i "Attempt x..." na podstawie numeru \textit{x} w nazwie. Ich odczytem zajmuje się biblioteka \href{https://docs.python.org/3/library/csv.html}{\textit{csv}}.
 
-Jedną z pierwszych decyzji było odrzucenie wszystkich symulacji, które zakończyły się przedwcześnie - z powodu wymarcia wszystkich komórek lub nadmiernego wzrostu populacji. Decyzja ta była zmotywowana faktem, że dane te zbyt mocno różniłyby się od oczekiwanych.
+Jedną z pierwszych decyzji było odrzucenie wszystkich symulacji, które zakończyły się przedwcześnie - z powodu wymarcia wszystkich komórek lub nadmiernego wzrostu populacji (ponad 200 komórek żyjących naraz). Decyzja ta była zmotywowana faktem, że dane te zbyt mocno różniłyby się od oczekiwanych i kończyłyby się wcześniej, niż cała reszta.
 
 \begin{figure}[H]
     \centering
