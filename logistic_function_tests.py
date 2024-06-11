@@ -1,27 +1,23 @@
 import numpy as np
 import math
-import random
 import matplotlib.pyplot as plt
+import random
 
-def custom_logistic(x, mn, mx, mean):    
-    m_inter = (mean-mn)/(mx-mn)
+def custom_logistic(x, minimum, maximum, mean):    
+    m_inter = (mean-minimum)/(maximum-minimum)
        
-    return x**math.log(m_inter, 0.5) * (mx-mn) + mn
+    return x**math.log(m_inter, 0.5) * (maximum-minimum) + minimum
 
-mn = 20
-mx = 100
+minimum = 20
+maximum = 100
 mean = 40
-k = 5
 
-mnx = (mean - mn) / (mx - mn)
+mnx: float = (mean - minimum) / (maximum - minimum)
 
 x_values = np.linspace(0.001, 1, 1000)
-y_values = custom_logistic(x_values, mn, mx, mean)
+y_values = custom_logistic(x_values, minimum, maximum, mean)
 
-suma = 0
-for i in range(1000):
-    suma += custom_logistic(random.uniform(0., 1.), mn, mx, mean)
-print(suma / 1000)
+print(sum(custom_logistic(random.uniform(0., 1.), minimum, maximum, mean) for _ in range(100000)) / 100000)
 
 plt.plot(x_values, y_values)
 plt.xlabel('x')
