@@ -4,7 +4,6 @@ from typing import List, Optional
 import pandas as pd
 import re
 from datetime import datetime
-from tqdm import tqdm
 
 DATA_FOLDER = "data\\"
 
@@ -81,7 +80,7 @@ def parse_csvs(
     error_count = 0
     skipped_count = 0
 
-    for initial_settings_filename in tqdm(initial_settings):
+    for initial_settings_filename in initial_settings:
         try:
             m: re.Match[str] | None = re.fullmatch(
                 r"Initial settings (?P<index>\d+) - (?P<date>\d\d.\d\d.\d\d\d\d \d\d-\d\d-\d\d).csv",
