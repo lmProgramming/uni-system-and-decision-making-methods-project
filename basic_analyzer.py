@@ -26,11 +26,11 @@ health gene
 """
 
 
-def analyze_simulation_results(simulation_results: List[SimulationResults]):
+def analyze_simulation_results(simulation_results: List[SimulationResults]) -> None:
     print("Started analyzing...")
 
     while True:
-        initial_parameter_name = input(
+        initial_parameter_name: str = input(
             "Enter the name of the initial parameter you want to analyze (or 'exit' to exit): "
         )
         if initial_parameter_name == "exit":
@@ -46,7 +46,8 @@ def analyze_simulation_results(simulation_results: List[SimulationResults]):
         initial_parameter_selected = [
             init[initial_parameter_name] for init in initial_parameters
         ]
-        result_name = input("Enter the name of the result you want to analyze: ")
+        result_name: str = input(
+            "Enter the name of the result you want to analyze: ")
         results = [
             result.get_last_history()[result_name] for result in simulation_results
         ]
@@ -54,7 +55,8 @@ def analyze_simulation_results(simulation_results: List[SimulationResults]):
         model = LinearRegression
 
         reg: LinearRegression = estimate(
-            model(), initial_parameters[:train_data_amount], results[:train_data_amount]
+            model(
+            ), initial_parameters[:train_data_amount], results[:train_data_amount]
         )
         print(reg.coef_)
         print(reg.score(initial_parameters, results))
